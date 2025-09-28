@@ -155,6 +155,7 @@ fn main() -> Result<()> {
 
         Command::Read { layer } => {
             debug!("dev options: {:?}", options.devel_options);
+            debug!("Opening keyboard to read layer {layer}");
             let mut keyboard = open_keyboard(&options).context("opening keyboard")?;
             let macropad_config = keyboard
                 .read_macropad_config(layer)
@@ -264,6 +265,9 @@ fn open_keyboard(options: &Options) -> Result<Box<dyn Keyboard>> {
     )
     .context("find USB device")?;
 
+    debug!("found device: {device:?}");
+    debug!("device descriptor: {desc:?}");
+
     ensure!(
         desc.num_configurations() == 1,
         "only one device configuration is expected"
@@ -302,13 +306,20 @@ pub fn find_device(vid: u16, pid: Option<u16>) -> Result<(Device<Context>, Devic
     } else {
         debug!("pid: None");
     }
+
+    #[cfg(windows)]
+    debug!("Using WinUSB driver (usbdk)");
+
     let options = vec![
         #[cfg(windows)]
         rusb::UsbOption::use_usbdk(),
     ];
     let usb_context = rusb::Context::with_options(&options)?;
 
+    debug!("USB context created");
+
     let mut found = vec![];
+    debug!("Searching for devices...");
     for device in usb_context.devices().context("get USB device list")?.iter() {
         let desc = device.device_descriptor().context("get USB device info")?;
         debug!(
@@ -321,8 +332,10 @@ pub fn find_device(vid: u16, pid: Option<u16>) -> Result<(Device<Context>, Devic
         let product_id = desc.product_id();
 
         if desc.vendor_id() == vid {
+            debug!("Found matching vendor id 0x{:02x}", vid);
             if let Some(prod_id) = pid {
                 if PRODUCT_IDS.contains(&prod_id) {
+                    debug!("Found matching product id 0x{:02x}", prod_id);
                     found.push((device, desc, product_id));
                 }
             } else {
@@ -330,6 +343,8 @@ pub fn find_device(vid: u16, pid: Option<u16>) -> Result<(Device<Context>, Devic
             }
         }
     }
+
+    debug!("Found {} matching devices", found.len());
 
     match found.len() {
         0 => Err(anyhow!(
