@@ -256,6 +256,10 @@ Installing rust with the installer prompts to install visual studio
 community edition (which is free) and is sufficient to build the
 executable
 
+## Debugging
+
+To see the debug logs set the `RUST_LOG` environment variable. Example: `$env:RUST_LOG = "debug"`
+
 ## Running the Application
 
 -   You will need to install the USB Development Kit to be able to talk
