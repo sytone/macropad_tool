@@ -12,7 +12,7 @@
             buttons: [
                 [(delay: 0, mapping: "ctrl-a,ctrl-c"), (delay: 0, mapping:"b"), (delay: 0, mapping: "c"), (delay: 0, mapping: "d")],
                 [(delay: 0, mapping: "e"), (delay: 0, mapping: "f"), (delay: 0, mapping: "g"), (delay: 0, mapping: "h")],
-                [(delay: 0, mapping: "i"), (delay: 0, mapping: "j"), (delay: 0, mapping: "k"), (delay: 0, mapping: "l")],
+                [(delay: 100, mapping: "click,click,click,click,click,click,click,click,click,click"), (delay: 0, mapping: "j"), (delay: 0, mapping: "k"), (delay: 0, mapping: "l")],
             ],
             knobs: [
                 (ccw: (delay: 0, mapping: "volumedown"), press: (delay: 0, mapping: "mute"), cw: (delay: 0, mapping: "volumeup")),
