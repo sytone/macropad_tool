@@ -1,0 +1,55 @@
+{
+    "name": "Macropad Tool Development",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "macropad-dev",
+    "workspaceFolder": "/workspace",
+    "shutdownAction": "stopCompose",
+    // Configure tool-specific properties
+    "customizations": {
+        "vscode": {
+            // Extensions to install in the container
+            "extensions": [
+                "rust-lang.rust-analyzer",
+                "vadimcn.vscode-lldb",
+                "serayuzgur.crates",
+                "tamasfe.even-better-toml",
+                "ms-vscode.hexeditor"
+            ],
+            // VS Code settings
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "rust-analyzer.cargo.buildScripts.enable": true,
+                "rust-analyzer.procMacro.enable": true,
+                "rust-analyzer.checkOnSave.command": "clippy"
+            }
+        }
+    },
+    // Mount the source code
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+    ],
+    // Set environment variables
+    "containerEnv": {
+        "RUST_LOG": "debug"
+    },
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    "forwardPorts": [],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "postCreateCommand": "echo 'Container ready for Macropad development!'",
+    // Connect as root to allow USB access
+    "remoteUser": "root",
+    // Enable features
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "configureZshAsDefaultShell": true,
+            "installOhMyZsh": true,
+            "installOhMyZshConfig": true,
+            "upgradePackages": true
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "ppa": true,
+            "version": "latest"
+        }
+    }
+}

@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  macropad-dev:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      # Mount the workspace
+      - ..:/workspace:cached
+      # Mount cargo cache to persist dependencies
+      - cargo-cache:/usr/local/cargo/registry
+      # Mount target directory for build artifacts
+      - target-cache:/workspace/target
+
+    # Enable USB device access
+    privileged: true
+
+    # Mount USB devices (this will mount all USB devices)
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+
+    # Additional device access rules for USB
+    device_cgroup_rules:
+      - "c 189:* rmw" # USB devices
+
+    # Network mode for development
+    network_mode: host
+
+    # Environment variables
+    environment:
+      - RUST_LOG=debug
+      - USBDK_ENABLED=1
+
+    # Keep container running
+    stdin_open: true
+    tty: true
+
+    # Working directory
+    working_dir: /workspace
+
+    # Restart policy
+    restart: unless-stopped
+
+volumes:
+  cargo-cache:
+  target-cache:
